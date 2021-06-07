@@ -8,20 +8,23 @@
 
 char send = 1;
 char curr_send = 1;
-uint number = 0;
+uint number = 0000000000;
 uint mask = 0x80000000;
 int cnt = 0;
 pid_t snd_pid;
 
 void my_handler(int nsig) {
+    int bit=0;
     if (nsig == SIGUSR1) {
-        mask >>= 1;
+        bit=0;
     } else if (nsig == SIGUSR2) {
-        number += mask;
-        mask >>= 1;
+        bit=1;
     }
+    if(cnt==0)
+        number = bit;
+    number = (number << 1) + bit;
     cnt++;
-    if (cnt == 32) {
+    if (cnt > 32) {
         kill(snd_pid, SIGUSR2);
     } else {
         kill(snd_pid, SIGUSR1);
@@ -40,6 +43,7 @@ int main(void) {
     printf("Enter reciever pid: ");
     scanf("%d", &snd_pid);
 
+    kill(snd_pid, SIGUSR1);
     while (cnt<32) {
     }
 

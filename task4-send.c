@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 char send = 1;
-char curr_send = 1;
+char curr_send = 0;
 
 void my_handler(int nsig) {
     if (nsig == SIGUSR1) {
@@ -40,12 +40,12 @@ int main(void) {
 
             int bit = (number & mask) ? 1 : 0;
 
-            mask >>= 1;
-            if (bit) {
+            if (bit==0) {
                 kill(rec_pid, SIGUSR1);
             } else {
                 kill(rec_pid, SIGUSR2);
             }
+            mask >>= 1;
             curr_send = 0;
         }
     }
